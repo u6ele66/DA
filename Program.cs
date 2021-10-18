@@ -8,8 +8,9 @@ namespace lw1
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] args) 
         {
+            // parser
             var path = @"C:\Users\Lenovo\Desktop\COVID-19-master\COVID-19-master\csse_covid_19_data\csse_covid_19_daily_reports\01-02-2021.csv";
             using (TextFieldParser csvParser = new TextFieldParser(path))
             {
@@ -22,7 +23,6 @@ namespace lw1
 
                 while (!csvParser.EndOfData)
                 {
-                    // Read current line fields, pointer moves to the next line.
                     string[] fields = csvParser.ReadFields();
                     string FIPS = fields[0];
                     string Admin2 = fields[1];
