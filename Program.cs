@@ -79,7 +79,7 @@ namespace lw1
             }
         }
 
-        static void Main(string[] args) 
+        static void Main(string[] args)
         {
             foreach (var file in fileArr)
             {
