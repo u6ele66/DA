@@ -8,37 +8,86 @@ namespace lw1
 {
     class Program
     {
+        static string mainPath = @"..\..\..\..\..\COVID-19-master\COVID-19-master\csse_covid_19_data\csse_covid_19_daily_reports";
+        static string mainPathUs = @"..\..\..\..\..\COVID-19-master\COVID-19-master\csse_covid_19_data\csse_covid_19_daily_reports_us";
+        static string[] fileArr = Directory.GetFiles($@"{mainPath}", "*.csv");
+
+        public static TextFieldParser SetParser(string path)
+        {
+            TextFieldParser csvParser = new TextFieldParser(path);
+            csvParser.CommentTokens = new string[] { "#" };
+            csvParser.SetDelimiters(new string[] { "," });
+            csvParser.HasFieldsEnclosedInQuotes = true;
+            return csvParser;
+        }
+
+        public static string[] GetColumnList(string path)
+        {
+            string[] columns;
+            columns = SetParser(path).ReadFields();
+            return columns;
+        }
+
+        public static string[] GetColumnsNames(string path)
+        {
+            string[] titles = GetColumnList(path.ToString()); //берем первый(0) элемент, потому что названия колонок во всех таблицах одни и те же.
+            string[] columnList = new string[titles.Length];
+            for (int i = 0; i < titles.Length; i++)
+            {
+                columnList[i] = titles[i];
+            }
+
+            return columnList;
+        }
+
+        public static string[] GetAllData(string path, string dataLine)
+        {
+            string[] dataList = new string[GetColumnsNames(path).Length];
+            int i = 0;
+            foreach (var item in dataLine.Split(','))
+            {
+                dataList[i] = item;
+                i++;
+                if(dataList[dataList.Length-1] != null)
+                {
+                    break;
+                }
+            }
+
+            return dataList;
+        }
+
+        public static void GetParsedData(string path, TextFieldParser parsedFile)
+        {
+            string[] fields = new string[GetColumnsNames(path).Length];
+
+            string dataLine;
+            var columns = GetColumnsNames(path);
+
+            while ((dataLine = parsedFile.ReadLine()) != null)
+            {
+                var allData = GetAllData(path, dataLine);
+
+                for (int i = 0; i < columns.Length; i++)
+                {
+                    foreach (var data in allData)
+                    {
+                        Console.WriteLine($"{columns[i]}: {data}");
+                        i++;
+                    }
+                }
+            }
+        }
+
         static void Main(string[] args) 
         {
-            // parser
-            var path = @"C:\Users\Lenovo\Desktop\COVID-19-master\COVID-19-master\csse_covid_19_data\csse_covid_19_daily_reports\01-02-2021.csv";
-            using (TextFieldParser csvParser = new TextFieldParser(path))
+            foreach (var file in fileArr)
             {
-                csvParser.CommentTokens = new string[] { "#" };
-                csvParser.SetDelimiters(new string[] { "," });
-                csvParser.HasFieldsEnclosedInQuotes = true;
+                var actualPath = file.ToString();
+                var parsedFile = SetParser(actualPath);
+                parsedFile.ReadLine();
 
-                // Skip the row with the column names
-                csvParser.ReadLine();
-
-                while (!csvParser.EndOfData)
-                {
-                    string[] fields = csvParser.ReadFields();
-                    string FIPS = fields[0];
-                    string Admin2 = fields[1];
-                    string Province_State = fields[2];
-                    string Country_Region = fields[3];
-                    string Last_Update = fields[4];
-                    string Lat = fields[5];
-                    string Long_ = fields[6];
-                    string Confirmed = fields[7];
-                    string Deaths = fields[8];
-                    string Recovered = fields[9];
-                    string Active = fields[10];
-                    string Combined_Key = fields[11];
-                    string Incident_Rate = fields[12];
-                    string Case_Fatality_Ratio = fields[13];
-                }
+                GetParsedData(actualPath, parsedFile);
             }
         }
     }
