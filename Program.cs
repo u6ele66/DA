@@ -12,8 +12,6 @@ namespace lw1
 
         public static void GetParsedData(string path, TextFieldParser parsedFile)
         {
-            string[] fields = new string[Parser.GetColumnsAmount(path)];
-
             string dataLine;
             var columns = Parser.GetColumnsNames(path);
 
@@ -37,7 +35,7 @@ namespace lw1
             foreach (var file in fileArr)
             {
                 var actualPath = file.ToString();
-                var parsedFile = Parser.SetParser(actualPath);
+                var parsedFile = Parser.SetParserParameters(actualPath);
                 parsedFile.ReadLine();
 
                 GetParsedData(actualPath, parsedFile);

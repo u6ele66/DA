@@ -1,11 +1,10 @@
 ﻿using Microsoft.VisualBasic.FileIO;
-using System;
 
 namespace lw1
 {
-    class Parser
+    class Parser : Program
     {
-        public static TextFieldParser SetParser(string path)
+        public static TextFieldParser SetParserParameters(string path)
         {
             TextFieldParser csvParser = new TextFieldParser(path);
             csvParser.CommentTokens = new string[] { "#" };
@@ -16,7 +15,7 @@ namespace lw1
 
         public static string[] GetColumnsNames(string path)
         {
-            string[] columns = SetParser(path).ReadFields();
+            string[] columns = SetParserParameters(path).ReadFields();
             string[] columnList = new string[columns.Length];
             for (int i = 0; i < columns.Length; i++)
             {
@@ -45,28 +44,6 @@ namespace lw1
             }
 
             return dataList;
-        }
-
-        public static void GetParsedData(string path, TextFieldParser parsedFile)
-        {
-            string[] fields = new string[GetColumnsAmount(path)];
-
-            string dataLine;
-            var columns = GetColumnsNames(path);
-
-            while ((dataLine = parsedFile.ReadLine()) != null)
-            {
-                var allData = GetAllData(path, dataLine);
-
-                for (int i = 0; i < columns.Length; i++)
-                {
-                    foreach (var data in allData)
-                    {
-                        Console.WriteLine($"{columns[i]}: {data}");
-                        i++;
-                    }
-                }
-            }
         }
     }
 }
