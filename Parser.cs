@@ -2,7 +2,7 @@
 
 namespace lw1
 {
-    class Parser : Program
+    class Parser
     {
         public static TextFieldParser SetParserParameters(string path)
         {
