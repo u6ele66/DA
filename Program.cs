@@ -8,6 +8,7 @@ namespace lw1
     {
         static void Main(string[] args)
         {
+            
         }
     }
 }
