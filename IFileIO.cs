@@ -8,5 +8,6 @@ namespace lw1
 {
     interface IFileIO
     {
+        public string[,] ReadFile(string path);
     }
 }
