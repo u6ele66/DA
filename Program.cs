@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using System;
 using System.IO;
+using System.Data.SqlClient;
 
 namespace lw1
 {
@@ -8,10 +9,21 @@ namespace lw1
     {
         static void Main(string[] args)
         {
+            //проверка подключения к бд
             ISqlConn db = new SqlConn();
             db.openConnection();
-            db.getConnection();
-            db.closeConnection();
+            if((db.getConnection()).State == System.Data.ConnectionState.Closed)
+            {
+                Console.WriteLine("ошибка, нет подключения к бд");
+            }
+            else
+            {
+                Console.WriteLine("все норм");
+            }
+
+            DBTable table = new DBTable();
+
+            table.CreateTable();
 
             //проверка на корректное кол-во аргументов программы
             IArgumentParser argsValidation = new ArgumentParser();
