@@ -14,20 +14,20 @@ namespace lw1
             ISqlConn db = new SqlConn();
             SqlConnection con = db.getConnection();
 
-            string query = "CREATE TABLE covid_data" + "(FIPS INT, " +
-                "Admin2 NVARCHAR(20)," +
-                "Province_State NVARCHAR(20)," +
-                "Country_Region NVARCHAR(20)," +
-                "Last_Update DATETIME," +
-                "Lat FLOAT," +
-                "Long_ FLOAT," +
-                "Confirmed INT," +
-                "Deaths INT," +
-                "Recovered INT," +
-                "Active INT," +
-                "Combined_Key NVARCHAR(20)," +
-                "Incident_Rate FLOAT," +
-                "Case_Fatality_Ratio FLOAT)";
+            string query = "CREATE TABLE covid_data" + $"({nameof(IFields.FIPS)} INT, " +
+                $"{nameof(IFields.Admin2)} NVARCHAR(20)," +
+                $"{nameof(IFields.Province_State)} NVARCHAR(20)," +
+                $"{nameof(IFields.Country_Region)} NVARCHAR(20)," +
+                $"{nameof(IFields.Last_Update)} DATETIME," +
+                $"{nameof(IFields.Lat)} FLOAT," +
+                $"{nameof(IFields.Long_)} FLOAT," +
+                $"{nameof(IFields.Confirmed)} INT," +
+                $"{nameof(IFields.Deaths)} INT," +
+                $"{nameof(IFields.Recovered)} INT," +
+                $"{nameof(IFields.Active)} INT," +
+                $"{nameof(IFields.Combined_Key)} NVARCHAR(20)," +
+                $"{nameof(IFields.Incident_Rate)} FLOAT," +
+                $"{nameof(IFields.Case_Fatality_Ratio)} FLOAT)";
             SqlCommand sqlCommand = new SqlCommand(query, con);
 
             try
@@ -37,7 +37,7 @@ namespace lw1
                 con.Open();
                 sqlCommand.ExecuteNonQuery();
                 con.Close();
-                
+
                 Console.WriteLine("Table created");
             }
             catch
