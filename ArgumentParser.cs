@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace lw1
 {
-    class ArgumentParser
+    class ArgumentParser : IArgumentParser
     {
         private static int _argsCount = 2;
         static bool _argsNumberIsValid = true;
 
-        public static bool CheckNumberOfArgs(string[] args)
+        public bool CheckNumberOfArgs(string[] args)
         {
             if(args.Length != _argsCount)
             {

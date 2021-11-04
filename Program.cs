@@ -8,13 +8,17 @@ namespace lw1
     {
         static void Main(string[] args)
         {
+            //проверка на корректное кол-во аргументов программы
+            IArgumentParser argsValidation = new ArgumentParser();
+            argsValidation.CheckNumberOfArgs(args);
+
             for(int i = 0; i < args.Length; i++) //цикл для обхода всех директорий с файлами
             {
                 string[] fileArr = Directory.GetFiles($@"{args[i]}", "*.csv"); //инициализация массива файлов в определенной дериктории
 
-                IFileIO newFile = new FileIO();
+                IFileIO file = new FileIO();
 
-                var dataArr = newFile.ReadFile(fileArr[0]);
+                var dataArr = file.ReadFile(fileArr[0]);
 
                 int height = dataArr.GetLength(0);
                 int width = dataArr.GetLength(1);
