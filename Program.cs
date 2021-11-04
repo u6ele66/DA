@@ -21,7 +21,7 @@ namespace lw1
                 Console.WriteLine("все норм");
             }
 
-            DBTable table = new DBTable();
+            IDBTable table = new DBTable();
 
             table.CreateTable();
 

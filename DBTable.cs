@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace lw1
 {
-    class DBTable
+    class DBTable : IDBTable
     {
        public void CreateTable()
         {
@@ -57,7 +57,6 @@ namespace lw1
 
             try
             {
-
                 con.Open();
                 sqlCommandDelete.ExecuteNonQuery();
                 con.Close();
