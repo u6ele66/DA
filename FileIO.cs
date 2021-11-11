@@ -40,6 +40,23 @@ namespace lw1
             return lineCount;
         }
 
+        private static void RemoveAt(ref string[] arr, int index)
+        {
+            string[] newArr = new string[arr.Length - 1];
+            
+            for(int i = 0; i < index; i++)
+            {
+                newArr[i] = arr[i];
+            }
+            
+            for(int i = index + 1; i < arr.Length; i++)
+            {
+                newArr[i - 1] = arr[i];
+            }
+
+            arr = newArr;
+        } 
+
         public string[,] ReadFile(string path)
         {
             var parser = GetFileforParse(path);
@@ -61,15 +78,75 @@ namespace lw1
                         {
                             dataList = new string[header.Length];
                             int i = 0;
-                            foreach (var item in dataLine.Split(','))
+                            string[] itemList = dataLine.Split(',');
+                            for (int itemIndex = 0; itemIndex < itemList.Length; itemIndex++)
                             {
-                                dataList[i] = item;
+                                if(itemList[itemIndex].StartsWith("\""))
+                                {
+                                    string lineStart = itemList[itemIndex];
+                                    string resultItem = "";
+                                    string lineEnd = "";
+                                    int iterCount = 0;
+                                    while (!itemList[itemIndex].EndsWith("\""))
+                                    {
+                                        if (iterCount == 0)
+                                        {
+                                            resultItem = resultItem + itemList[itemIndex + 1];
+                                            if (itemList[itemIndex + 1].EndsWith("\""))
+                                            {
+                                                RemoveAt(ref itemList, itemIndex + 1);
+                                                break;
+                                            }
+                                            RemoveAt(ref itemList, itemIndex + 1);
+                                        }
+                                        else
+                                        {
+                                            resultItem = resultItem + "," + itemList[itemIndex];
+                                            RemoveAt(ref itemList, itemIndex);
+                                            if(itemList[itemIndex].EndsWith("\""))
+                                            {
+                                                resultItem = resultItem + "," + itemList[itemIndex];
+                                                RemoveAt(ref itemList, itemIndex);
+                                                break;
+                                            }
+                                            continue;
+                                        }
+                                        if (itemList[itemIndex].EndsWith("\""))
+                                        {
+                                            lineEnd = itemList[itemIndex];
+                                        }
+                                        itemIndex++;
+                                        iterCount++;
+                                    }
+                                    if(iterCount == 0)
+                                    {
+                                        itemList[itemIndex] = lineStart + "," + resultItem + "," + lineEnd;
+                                    }
+                                    else
+                                    {
+                                        itemList[itemIndex - 1] = lineStart + "," + resultItem + "," + lineEnd;
+                                    }
+                                }
+                            }
+                            //foreach (var item in itemList)
+                            //{
+                            //    dataList[i] = item.Replace(".", ",");
+                            //    i++;
+                            //    if (dataList[dataList.Length - 1] != null)
+                            //    {
+                            //        break;
+                            //    }
+                            //}
+                            foreach(var item in itemList)
+                            {
+                                dataList[i] = item.Replace("'", "''");
                                 i++;
                                 if (dataList[dataList.Length - 1] != null)
                                 {
                                     break;
                                 }
                             }
+
                             foreach (var el in dataList)
                             {
                                 data[j, k] = el;
