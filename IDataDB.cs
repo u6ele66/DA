@@ -8,6 +8,6 @@ namespace lw1
 {
     interface IDataDB
     {
-        public void InsertDataInTable(string path);
+        public void InsertDataInTable(string path, string directory);
     }
 }

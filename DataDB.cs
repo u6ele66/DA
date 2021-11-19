@@ -10,9 +10,11 @@ namespace lw1
     class DataDB : IDataDB
     {
         private static string langToEng = "SET LANGUAGE ENGLISH";
-        private static string dbName = "covid_data";
+        private static string dbName = "";
+        private static string tableName = "covid_data";
+        private static string tableNameUs = "covid_data_us";
 
-        public void InsertDataInTable(string path)
+        public void InsertDataInTable(string path, string directory)
         {
             ISqlConn newConn = new SqlConn();
             newConn.openConnection();
@@ -29,74 +31,84 @@ namespace lw1
             int height = dataArr.GetLength(0);
             int width = dataArr.GetLength(1);
 
-            var fields = typeof(IFields).GetProperties().Select(f => f.Name).ToList();
+            List<string> fields = new List<string>();
 
-            //for (int y = 0; y < height; y++)
-            //{
-            //    for (int x = 0; x < width; x++)
-            //    {
-            //        SqlCommand command = new SqlCommand($"INSERT INTO [covid_data] (" +
-            //        $"{listOfFieldNames[x]}) " +
-            //        $"VALUES ('{dataArr[y, x]}')", connection);
-            //        command.ExecuteNonQuery();
-            //    }
-            //}
+            if(directory.EndsWith("_us"))
+            {
+                fields = typeof(IFields_US).GetProperties().Select(f => f.Name).ToList();
+                dbName = tableNameUs;
+            }
+            else
+            {
+                fields = typeof(IFields).GetProperties().Select(f => f.Name).ToList();
+                dbName = tableName;
+            }
 
             SqlCommand command = new SqlCommand();
 
             string query = "";
+            string queryFields = "";
             int queryCount = 0;
 
             string queryStart = $"INSERT INTO [{dbName}] (";
 
-            for (int y = 0; y < height; y++)
+            for(int i = 0; i < width; i++)
             {
-                for (int i = 0; i < width; i++)
+                if (i == 0)
                 {
-                    if(i == 0 && y == 0)
+                    queryFields = queryStart + $"{fields[i]}, ";
+                }
+                else
+                {
+                    if (i == 0)
                     {
-                        query = queryStart + $"{fields[i]}, ";
+                        queryFields = queryFields + queryStart + $"{fields[i]}, ";
                     }
                     else
                     {
-                        if(y != 0 && i == 0)
+                        if (i > fields.Count - 1)
                         {
-                            query = query + queryStart + $"{fields[i]}, ";
+                            queryFields = queryFields.Trim();
+                            queryFields = queryFields.Remove(queryFields.Length - 1, 1) + ") ";
+                            break;
                         }
-                        else
-                        {
-                            query = query + $"{fields[i]}, ";
-                        }
+                        queryFields = queryFields + $"{fields[i]}, ";
                     }
+                }
+                if (i == width - 1)
+                {
+                    queryFields = queryFields.Trim();
+                    queryFields = queryFields.Remove(queryFields.Length - 1, 1) + ") ";
+                }
+            }
 
-                    if (i == width - 1)
+            for (int y = 0; y < height; y++)
+            {
+                query = query + $" VALUES (";
+                for (int j = 0; j < width; j++)
+                {
+                    if(j > fields.Count)
+                    {
+                        break;
+                    }
+                    query = query + $"'{dataArr[y, j]}', ";
+
+                    if (j == width - 1)
                     {
                         query = query.Trim();
-                        query = query.Remove(query.Length - 1, 1) + ")";
-
-                        query = query + $" VALUES (";
-
-                        for (int j = 0; j < width; j++)
-                        {
-                            query = query + $"'{dataArr[y, j]}', ";
-
-                            if (j == width - 1)
-                            {
-                                query = query.Trim();
-                                query = query.Remove(query.Length - 1, 1) + ")";
-                                break;
-                            }
-                        }
-                        if (query.EndsWith(")"))
-                        {
-                            queryCount++;
-                            query = query + ";\n";
-                            command = new SqlCommand(query, connection);
-                            command.ExecuteNonQuery();
-                            query = "";
-                            continue;
-                        }
+                        query = query.Remove(query.Length - 1, 1) + ");\n";
+                        break;
                     }
+                }
+                if (query.EndsWith(");\n"))
+                {
+                    queryCount++;
+                    //query = query + ";\n";
+                    query = queryFields + query;
+                    command = new SqlCommand(query, connection);
+                    command.ExecuteNonQuery();
+                    query = "";
+                    continue;
                 }
             }
         }

@@ -8,7 +8,7 @@ namespace lw1
 {
     interface IDBTable
     {
-        public void CreateTable();
-        public void DeleteTable();
+        public void CreateTable(string path);
+        public void DeleteTable(string tableName);
     }
 }

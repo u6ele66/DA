@@ -111,32 +111,40 @@ namespace lw1
                                             }
                                             continue;
                                         }
-                                        if (itemList[itemIndex].EndsWith("\""))
-                                        {
-                                            lineEnd = itemList[itemIndex];
-                                        }
                                         itemIndex++;
                                         iterCount++;
                                     }
-                                    if(iterCount == 0)
+                                    if (itemList[itemIndex].EndsWith("\""))
                                     {
-                                        itemList[itemIndex] = lineStart + "," + resultItem + "," + lineEnd;
+                                        lineEnd = itemList[itemIndex];
+                                        RemoveAt(ref itemList, itemIndex);
+                                    }
+                                    if(lineEnd != "")
+                                    {
+                                        if (iterCount == 0)
+                                        {
+                                            itemList[itemIndex] = lineStart + "," + resultItem + "," + lineEnd;
+                                        }
+                                        else
+                                        {
+                                            itemList[itemIndex - 1] = lineStart + "," + resultItem + "," + lineEnd;
+                                        }
                                     }
                                     else
                                     {
-                                        itemList[itemIndex - 1] = lineStart + "," + resultItem + "," + lineEnd;
+                                        if (iterCount == 0)
+                                        {
+                                            itemList[itemIndex] = lineStart + "," + resultItem;
+                                        }
+                                        else
+                                        {
+                                            itemList[itemIndex - 1] = lineStart + "," + resultItem;
+                                        }
                                     }
                                 }
                             }
-                            //foreach (var item in itemList)
-                            //{
-                            //    dataList[i] = item.Replace(".", ",");
-                            //    i++;
-                            //    if (dataList[dataList.Length - 1] != null)
-                            //    {
-                            //        break;
-                            //    }
-                            //}
+
+
                             foreach(var item in itemList)
                             {
                                 dataList[i] = item.Replace("'", "''");
