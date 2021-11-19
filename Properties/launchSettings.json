@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "lw1": {
+      "commandName": "Project",
+      "commandLineArgs": "\"D:\\COVID-19-master\\COVID-19-master\\csse_covid_19_data\\csse_covid_19_daily_reports\" \"D:\\COVID-19-master\\COVID-19-master\\csse_covid_19_data\\csse_covid_19_daily_reports_us\""
+    }
+  }
+}
